@@ -93,20 +93,22 @@ See: `docs/aee-binding.md`
 
 ## Related Protocols
 
-AOCL is part of the **Quox protocol family** -- three complementary specs for agentic systems:
+AOCL is part of the **Quox protocol family** -- four complementary specs for agentic systems:
 
 | Protocol | Role | Repo |
 |----------|------|------|
 | **AEE** | Envelope format + causality | [AEE](https://github.com/quoxai/aee) |
 | **AOCL** | Orchestration control layers | *(this repo)* |
 | **VOLT** | Verifiable evidence ledger + tamper-evident traces | [VOLT](https://github.com/quoxai/volt) |
+| **WARD** | Content-free hash-chain witnessing + external anchoring | [WARD](https://github.com/quoxai/ward) |
 
 **How they connect:**
 - **AEE → AOCL**: AOCL processes incoming AEE envelopes through its layer stack and emits `aocl.*` AEE envelopes for audit.
 - **AOCL → VOLT**: Every AOCL policy decision (`allow`, `deny`, `hitl_required`) becomes a VOLT evidence event with `context.aocl_policy_id` and `context.aocl_decision_id`, creating a tamper-evident record of control decisions.
 - **VOLT proves AOCL**: VOLT's hash-chained event ledger guarantees that approval sequences (e.g., "HITL required → approved → tool executed") haven't been tampered with after the fact.
+- **WARD witnesses AOCL**: WARD produces content-free receipts of AOCL decisions (completions, rejections, bypasses) -- proving decisions happened without storing their content. Signed tips can be published to external sinks for independent verification.
 
-Each protocol is independently useful. Together they provide **observable, controllable, provable** agent operations.
+Each protocol is independently useful. Together they provide **observable, controllable, provable, witnessed** agent operations.
 
 ## Status
 
