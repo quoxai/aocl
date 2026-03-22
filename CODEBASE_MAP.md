@@ -1,23 +1,24 @@
-<!-- Last verified: 2026-03-14 by /codebase-mirror -->
+<!-- Last verified: 2026-03-21 by /codebase-mirror -->
 
 # AOCL (Agent Orchestration Control Layers) — Codebase Map
 
 ## Metrics
+
 | Metric | Count |
 |--------|-------|
-| Files | 7 |
-| Schema Files | 2 |
-| IETF Draft | Yes (draft-cowles-aocl-00) |
+| Spec files | 1 (docs/spec.md) |
+| Supporting docs | 5 (stacks, observability, examples, aee-binding, ROADMAP) |
+| Schemas | 0 |
+
+## Summary
+
+AOCL defines the 7-layer processing pipeline for agent operations, inspired by the OSI model. Layers: Ingress, Identity, Policy, Context, Execute, Verify, Assemble.
 
 ## Key Files
-| File | Purpose |
-|------|---------|
-| README.md | Protocol overview |
-| docs/spec.md | Core concepts, layer contract |
-| docs/aee-binding.md | AOCL→AEE binding |
-| docs/stacks.md | Layer taxonomy, stack definitions |
-| docs/observability.md | Tracing, logging |
-| examples/stacks/*.json | Example stack configs |
 
-## Status
-Protocol v0.1 (experimental) — IETF submitted 2026-02-28 (#160323) — MIT
+- docs/spec.md — Full specification
+- docs/stacks.md — Stack configurations
+- docs/observability.md — Observability integration
+- docs/examples.md — Usage examples
+- docs/aee-binding.md — AEE protocol binding
+- ROADMAP.md — Development roadmap
