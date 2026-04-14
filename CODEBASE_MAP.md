@@ -1,4 +1,5 @@
-<!-- Last regenerated: 2026-04-13T12:00Z by codebase-mirror scan -->
+<!-- Last regenerated: 2026-04-14T18:45Z by codebase-mirror scan -->
+<!-- Verified: 2026-04-14 - full scan complete, all docs/examples validated -->
 
 # AOCL (Agent Orchestration Control Layers) — Codebase Map
 
