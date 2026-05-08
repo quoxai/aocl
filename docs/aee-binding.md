@@ -227,4 +227,46 @@ If bypassing layers is requested or applied, AOCL MUST emit an AEE `event` captu
 - Canonical JSON serialization rules for digests
 - A global registry for AOCL layer IDs
 
+---
+
+## 10. QuoxFlow Intent Vocabulary (R5.low)
+
+QuoxFlow extends the AOCL intent namespace with the following intents. All are emitted as AEE `event` envelopes.
+
+### Budget / Cost Control (`quox.budget.*`)
+
+| Intent | Trigger | Key Payload Fields |
+|--------|---------|-------------------|
+| `quox.budget.exhausted` | Pre-execution budget check fails | `executionId`, `workflowId`, `scope`, `scopeId`, `orgId`, `exceeded: string[]`, `reason: string` |
+| `quox.budget.warning` | Usage approaches a budget threshold | `executionId`, `workflowId`, `scope`, `scopeId`, `orgId`, `exceeded: string[]`, `reason: string` |
+
+### Policy Gates (`quox.policy.*`)
+
+| Intent | Trigger | Key Payload Fields |
+|--------|---------|-------------------|
+| `quox.policy.rejected` | Policy layer denies execution (POLICY_DENIED) | `executionId`, `workflowId`, `policyId`, `policyName`, `reason: string` |
+| `quox.policy.gate_error` | Unexpected error inside the policy gate (non-deny) | `executionId`, `workflowId`, `error: string` |
+
+### Agentic Skill Loop (`agentic.skill.*`)
+
+Emitted by the agentic executor during the crystalliser / skill-promotion loop (STUDY-REV-2 P9).
+
+| Intent | Trigger | Key Payload Fields |
+|--------|---------|-------------------|
+| `agentic.skill.retrieved` | Matching skill found in library | `executionId`, `workflowId`, `skillId`, `skillName` |
+| `agentic.skill.drafted` | New skill candidate drafted | `executionId`, `workflowId`, `skillId`, `draftHash` |
+| `agentic.skill.refined` | Skill candidate iterated/refined | `executionId`, `workflowId`, `skillId`, `iteration: number` |
+| `agentic.skill.promoted` | Skill candidate promoted to library | `executionId`, `workflowId`, `skillId`, `skillName` |
+| `agentic.skill.draft_rejected_already_exists` | Draft rejected because skill already in library | `executionId`, `workflowId`, `existingSkillId` |
+
+### Approval Lifecycle (`quox.approval.*`)
+
+| Intent | Trigger | Key Payload Fields |
+|--------|---------|-------------------|
+| `quox.approval.cancelled_workflow_deactivated` | Pending approval cancelled because its workflow was deactivated | `approvalId`, `workflowId`, `executionId` |
+
+---
+
+All intents in the `quox.*` and `agentic.*` namespaces are defined in `quoxflow/src/core/envelope.ts` under the `Intents` constant.
+
 These can be added in `ROADMAP.md` once the v0.1 core is stable.
