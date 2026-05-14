@@ -1,145 +1,140 @@
-<!-- Last regenerated: 2026-04-14T18:45Z by codebase-mirror scan -->
-<!-- Verified: 2026-04-14 - full scan complete, all docs/examples validated -->
+<!-- Last verified: 2026-05-14T18:21Z by /codebase-mirror -->
 
-# AOCL (Agent Orchestration Control Layers) — Codebase Map
+# aocl — Codebase Map
 
-Control-layer protocol for AI agent orchestration. Standardizes how an orchestrator processes incoming events through ordered layers (routing, policy gating, context retrieval, delegation, verification). Produces observability as first-class output via AEE envelopes.
+**Agent Orchestration Control Layers.** A control-layer protocol for AI agent orchestration that produces observability as a first-class output. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD).
 
-| Field | Value |
-|-------|-------|
-| Version | 0.1 (Experimental) |
-| Status | IETF Internet-Draft |
-| IETF Draft | [`draft-cowles-aocl-00`](https://datatracker.ietf.org/doc/draft-cowles-aocl/) |
-| License | MIT |
+## Version & Status
+- **Spec:** 0.1 (Experimental)
+- **IETF Draft:** `draft-cowles-aocl-00`
+- **License:** MIT
 
-## Related Protocols (Quox Protocol Family)
-
-| Protocol | Role | Repo |
-|----------|------|------|
-| **AEE** | Envelope format + causality | [github.com/quoxai/aee](https://github.com/quoxai/aee) |
-| **AOCL** | Orchestration control layers | *(this repo)* |
-| **VOLT** | Verifiable evidence ledger | [github.com/quoxai/volt](https://github.com/quoxai/volt) |
-| **WARD** | Content-free hash-chain witnessing | [github.com/quoxai/ward](https://github.com/quoxai/ward) |
-
-## Directory Structure
+## Repository Structure
 
 ```
 aocl/
-├── README.md               # Protocol overview, mental model, quick example
-├── ROADMAP.md              # Planned extensions (v0.2–v0.6)
-├── LICENSE                 # MIT
+├── README.md                 # Protocol overview + mental model
+├── ROADMAP.md                # Version roadmap (v0.1 → v0.6)
+├── LICENSE                   # MIT
+├── CODEBASE_MAP.md           # This file
 ├── docs/
-│   ├── spec.md             # Core spec: terminology, design principles, context bundle
-│   ├── stacks.md           # Layer taxonomy, stack definition format (pipeline/DAG)
-│   ├── observability.md    # Trace events, NDJSON logging, UI views
-│   ├── aee-binding.md      # How AOCL emits AEE envelopes (intents, payloads)
-│   └── examples.md         # End-to-end trace + stack variants
+│   ├── spec.md               # Core spec: layers, context bundle, design principles
+│   ├── aee-binding.md        # How AOCL emits AEE envelopes (intent namespace, corr/reply_to)
+│   ├── stacks.md             # Layer taxonomy (L0-L10), stack definition format (pipeline/DAG)
+│   ├── observability.md      # Trace events, NDJSON logging, UI views
+│   └── examples.md           # End-to-end trace + stack variants
 └── examples/
     ├── stacks/
-    │   ├── realtime-alert.json       # Speed-first pipeline (6 layers)
-    │   └── restricted-textonly.json  # Safety-first pipeline (no tool exec)
+    │   ├── realtime-alert.json        # Speed-first pipeline (6 layers)
+    │   └── restricted-textonly.json   # Safety-first, no tool execution
     └── traces/
-        └── backup-check.ndjson       # 14-event end-to-end AEE trace
+        └── backup-check.ndjson        # Full AEE trace (14 envelopes)
 ```
 
-## Canonical Layer Taxonomy (L0–L10)
+## Core Concepts
 
+### Layer Pipeline
+AOCL processes events through ordered layers:
+```
+Ingress → Identity → Router → Policy → Plan → Context → Rewrite → Delegate → Verify → Assemble → Audit
+```
+
+### Canonical Layers (L0-L10)
 | Layer | ID | Purpose |
-|-------|----|---------|
-| L0 | `L0.ingress.normalize` | Normalize incoming events, create run IDs |
-| L1 | `L1.identity.scope` | Apply identity, permissions, redaction rules |
-| L2 | `L2.route.smart` | Deterministic fast-path router (pattern match, cache) |
-| L3 | `L3.policy.gate` | Safety/compliance checks, tool restrictions, HITL |
-| L4 | `L4.plan.decompose` | Convert intent to structured objectives |
-| L5 | `L5.context.retrieve` | Retrieve memory/files/RAG context |
-| L6 | `L6.shape.rewrite` | Rewrite into operational form (AEE tasks, tool plans) |
-| L7 | `L7.delegate.execute` | Delegate to agents/tools |
-| L8 | `L8.verify.check` | Verification/evals/consistency checks |
-| L9 | `L9.assemble.respond` | Assemble final response, apply formatting |
-| L10 | `L10.audit.writeback` | Persist trace summaries, memory writeback |
+|-------|-----|---------|
+| L0 | `ingress.normalize` | Parse incoming events, create run IDs |
+| L1 | `identity.scope` | Apply identity, permissions, redaction rules |
+| L2 | `route.smart` | Deterministic fast-path (cached answers, known commands) |
+| L3 | `policy.gate` | Safety/compliance checks, tool restrictions, HITL |
+| L4 | `plan.decompose` | Convert intent to structured objectives |
+| L5 | `context.retrieve` | Retrieve memory/RAG/files |
+| L6 | `shape.rewrite` | Rewrite into operational form |
+| L7 | `delegate.execute` | Delegate to agents/tools |
+| L8 | `verify.check` | Verification, evals, evidence requirements |
+| L9 | `assemble.respond` | Assemble final response |
+| L10 | `audit.writeback` | Persist trace, memory writeback |
 
-## Context Bundle Partitions (Recommended)
-
-| Partition | Purpose |
-|-----------|---------|
+### Context Bundle Partitions
+| Partition | Contents |
+|-----------|----------|
 | C0 Event | Source, timestamp, channel, correlation IDs |
-| C1 Identity & Scope | User/org, roles, permissions, redaction rules |
+| C1 Identity | User/org, roles, permissions, secret scope |
 | C2 Task | Goal, constraints, definition of done |
-| C3 Memory/Knowledge | RAG hits, file refs, summaries |
+| C3 Memory | RAG hits, file refs, summaries |
 | C4 Policy | Safety rules, allowed tools, model restrictions |
-| C5 Execution | Budgets, timeouts, concurrency, run_id |
-| C6 Audit | Log level, required evidence, checkpoints |
+| C5 Execution | Budgets, timeouts, concurrency, tool registry |
+| C6 Audit | Log level, evidence requirements, compliance checkpoints |
 
-## Stack Modes
+### AEE Binding
+AOCL emits audit via AEE envelopes using `aocl.*` intents:
+- `aocl.stack.select` — stack chosen
+- `aocl.layer.enter/exit/decision` — layer activity
+- `aocl.context.patch` — context deltas
+- `aocl.control.branch/bypass` — control flow changes
+- `aocl.verify.result` — verification outcome
+- `aocl.run.summary` — end-of-run summary
 
-| Mode | Description |
-|------|-------------|
-| `pipeline` | Ordered list of layers, executed sequentially |
-| `dag` | Nodes + edges with `when` conditions for branching |
+#### QuoxFlow Intent Vocabulary (R5.low)
+Extended intents for QuoxFlow integration:
 
-## AOCL Intent Namespace (`aocl.*`)
+| Namespace | Intents | Purpose |
+|-----------|---------|---------|
+| `quox.budget.*` | `exhausted`, `warning` | Pre-execution budget checks |
+| `quox.policy.*` | `rejected`, `gate_error` | Policy layer denials/errors |
+| `agentic.skill.*` | `retrieved`, `drafted`, `refined`, `promoted`, `draft_rejected_already_exists` | Crystalliser/skill-promotion loop |
+| `quox.approval.*` | `cancelled_workflow_deactivated` | Approval lifecycle events |
 
-| Intent | Type | Purpose |
-|--------|------|---------|
-| `aocl.stack.select` | event | Which stack/branch was chosen |
-| `aocl.layer.enter` | event | Layer started |
-| `aocl.layer.decision` | event | Layer decision (route/policy/plan) |
-| `aocl.layer.exit` | event | Layer completed |
-| `aocl.context.patch` | event | Context delta applied |
-| `aocl.control.bypass` | event | Bypass requested/allowed/denied |
-| `aocl.control.branch` | event | Branch taken/rejected |
-| `aocl.verify.result` | event | Verification summary |
-| `aocl.run.summary` | event | End-of-run summary |
+### Stack Modes
+- **Pipeline:** ordered list of layers (`mode: "pipeline"`)
+- **DAG:** nodes + edges with `when` conditions for branching (`mode: "dag"`)
 
 ## Example Stacks
 
-### `realtime-alert` (Speed-First)
-- **Layers:** L0 → L1 → L3 → L7 → L9 → L10
-- **Skips:** L2 (router), L4 (plan), L5 (context), L6 (shape), L8 (verify)
-- **Timeout:** 15s, 16 parallel actions
+### realtime-alert.json
+```
+L0 → L1 → L3 → L7 → L9 → L10
+```
+Speed-first: 15s timeout, 16 parallel actions, skips planning/context.
 
-### `restricted-textonly` (Safety-First)
-- **Layers:** L0 → L1 → L3 → L6 → L9 → L10
-- **Disables:** Tool execution, network access
-- **Timeout:** 30s, 0 parallel actions
+### restricted-textonly.json
+```
+L0 → L1 → L3 → L6 → L9 → L10
+```
+Safety-first: tool execution disabled, network access disabled.
 
-## Key Concepts
+## Design Principles
 
-| Concept | Description |
-|---------|-------------|
-| **Layer Contract** | Each layer produces: decision summary, context delta, optional actions, control flags |
-| **Delta-First** | Layers emit context patches + refs/digests, not full context blobs |
-| **Bypass Audit** | All bypasses MUST emit `aocl.control.bypass` events |
-| **AEE Binding** | AOCL uses AEE envelopes (`event`, `task`, `result`) without changing AEE spec |
-| **Correlation** | All envelopes share `corr` from originating request |
+1. **Layered control** — work flows through ordered layers with clear responsibilities
+2. **Branchable, bypassable** — alternate paths and skipping allowed, but auditable
+3. **Delta-first context** — layers emit patches and refs, not huge objects
+4. **Audit-first** — every run answers: what happened, why, what changed, who approved
+5. **Runtime-agnostic** — AOCL standardizes control flow, not execution
+
+## Observability Features
+
+- **Trace Timeline** — APM-style spans per layer with timing
+- **Context Diff Viewer** — delta per layer (added/modified/removed keys)
+- **Branch Map** — DAG view showing path taken vs skipped branches
+- **NDJSON logging** — one AEE envelope per line for grep/ELK/Kafka
+
+## Related Protocols
+
+| Protocol | Role | Repo |
+|----------|------|------|
+| AEE | Envelope format + causality | github.com/quoxai/aee |
+| AOCL | Orchestration control layers | *(this repo)* |
+| VOLT | Verifiable evidence ledger | github.com/quoxai/volt |
+| WARD | Content-free hash-chain witnessing | github.com/quoxai/ward |
+
+**How they connect:**
+- **AEE → AOCL**: AOCL processes AEE envelopes and emits `aocl.*` events for audit
+- **AOCL → VOLT**: Policy decisions become VOLT evidence events (tamper-evident)
+- **WARD witnesses AOCL**: Content-free receipts of decisions for external verification
 
 ## Roadmap Summary
-
-| Version | Focus |
-|---------|-------|
-| v0.1 | Minimal viable protocol (current) |
-| v0.2 | JSON schemas + validators |
-| v0.3 | Transport bindings (HTTP, WS, NATS, Kafka) |
-| v0.4 | Control-plane hardening (bypass policy, HITL) |
-| v0.5 | OpenTelemetry mapping, replay tooling, reference UI |
-| v0.6 | Reference implementations (Python, TypeScript) |
-
-## Metrics
-
-| Metric | Count |
-|--------|-------|
-| Spec Documents | 5 |
-| Canonical Layers | 11 (L0–L10) |
-| Context Partitions | 7 (C0–C6) |
-| Example Stacks | 2 |
-| Example Traces | 1 (14 events) |
-| AOCL Intents | 9 |
-
-## Invariants
-
-| Check | Status | Details |
-|-------|--------|---------|
-| spec-complete | ✓ pass | 11 layers documented in `docs/stacks.md` |
-| aee-binding | ✓ pass | 9 intents defined in `docs/aee-binding.md` |
-| examples-valid | ✓ pass | 2 stacks + 1 trace in `examples/` |
-| roadmap-defined | ✓ pass | v0.1–v0.6 planned in `ROADMAP.md` |
+- **v0.1** (current): Core spec, layer contract, AEE binding
+- **v0.2**: JSON schemas + validators
+- **v0.3**: Transport bindings (HTTP, WS, NATS, Kafka)
+- **v0.4**: Control-plane hardening (bypass policy, HITL)
+- **v0.5**: OpenTelemetry mapping, replay tooling
+- **v0.6**: Reference implementations (Python, TypeScript)
