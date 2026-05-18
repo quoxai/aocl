@@ -1,4 +1,4 @@
-<!-- Last verified: 2026-05-14T18:21Z by /codebase-mirror -->
+<!-- Last regenerated: 2026-05-18 by codebase-mirror -->
 
 # aocl — Codebase Map
 
