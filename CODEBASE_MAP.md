@@ -1,4 +1,4 @@
-<!-- Last regenerated: 2026-05-18 by codebase-mirror -->
+<!-- Last regenerated: 2026-05-31T09:30Z by codebase-mirror -->
 
 # aocl — Codebase Map
 
@@ -15,11 +15,11 @@
 aocl/
 ├── README.md                 # Protocol overview + mental model
 ├── ROADMAP.md                # Version roadmap (v0.1 → v0.6)
-├── LICENSE                   # MIT
+├── LICENSE                   # MIT license
 ├── CODEBASE_MAP.md           # This file
 ├── docs/
 │   ├── spec.md               # Core spec: layers, context bundle, design principles
-│   ├── aee-binding.md        # How AOCL emits AEE envelopes (intent namespace, corr/reply_to)
+│   ├── aee-binding.md        # How AOCL emits AEE envelopes (intent namespace, corr/reply_to, QuoxFlow intents)
 │   ├── stacks.md             # Layer taxonomy (L0-L10), stack definition format (pipeline/DAG)
 │   ├── observability.md      # Trace events, NDJSON logging, UI views
 │   └── examples.md           # End-to-end trace + stack variants
@@ -30,6 +30,8 @@ aocl/
     └── traces/
         └── backup-check.ndjson        # Full AEE trace (14 envelopes)
 ```
+
+**File count:** 12 files (4 root, 5 docs, 2 stacks, 1 trace) — excludes .git
 
 ## Core Concepts
 
@@ -54,16 +56,16 @@ Ingress → Identity → Router → Policy → Plan → Context → Rewrite → 
 | L9 | `assemble.respond` | Assemble final response |
 | L10 | `audit.writeback` | Persist trace, memory writeback |
 
-### Context Bundle Partitions
+### Context Bundle Partitions (C0-C6)
 | Partition | Contents |
 |-----------|----------|
-| C0 Event | Source, timestamp, channel, correlation IDs |
-| C1 Identity | User/org, roles, permissions, secret scope |
-| C2 Task | Goal, constraints, definition of done |
-| C3 Memory | RAG hits, file refs, summaries |
-| C4 Policy | Safety rules, allowed tools, model restrictions |
-| C5 Execution | Budgets, timeouts, concurrency, tool registry |
-| C6 Audit | Log level, evidence requirements, compliance checkpoints |
+| C0 Event | Source, timestamp, channel, correlation IDs, attachments |
+| C1 Identity | User/org, roles, permissions, secret scope, redaction rules |
+| C2 Task | Goal, constraints, definition of done, priority |
+| C3 Memory | Retrieved notes, RAG hits, file refs, summaries |
+| C4 Policy | Safety/compliance rules, allowed tools, model restrictions |
+| C5 Execution | Budgets, timeouts, concurrency, tool registry, model routing |
+| C6 Audit | Log level, required evidence, compliance checkpoints |
 
 ### AEE Binding
 AOCL emits audit via AEE envelopes using `aocl.*` intents:
