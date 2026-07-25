@@ -191,7 +191,7 @@ When a layer decides to delegate work to a worker agent, it emits an AEE `task` 
   "priority": "high",
   "requires": {"timeout_ms": 30000, "evidence": true},
   "payload": {
-    "cluster_ref": "inv://clusters/node.lan",
+    "cluster_ref": "inv://clusters/app-host-01.example.internal",
     "window": "24h",
     "context_refs": ["mem://run/RUN-01AOCL-0001/context-snapshot"]
   },

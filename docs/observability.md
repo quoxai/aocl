@@ -171,7 +171,7 @@ This keeps dashboards consistent even across different implementations.
       {"to": "agent.backup_auditor", "intent": "ops.backup.status.check", "status": "ok"}
     ],
     "verification": {"status": "pass", "confidence": 0.96},
-    "refs": ["log://pbs01/job/2026-01-26T02:00Z"],
+    "refs": ["log://backup-store-01/job/2026-01-26T02:00Z"],
     "notes": "Trace is complete; context digests recorded per layer."
   },
   "sig": null
