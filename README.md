@@ -91,6 +91,15 @@ See: `docs/aee-binding.md`
 
 ---
 
+## Reference SDK
+
+A conformant reference implementation of the portable side of AOCL exists:
+
+- **`@quox/aocl`** (TypeScript / Node, zero runtime dependencies), at **github.com/quoxai/aocl-sdk**.
+- The canonical L0..L10 layer taxonomy as data, a corr-scoped layer tracer emitting `aocl.*` AEE envelopes per `docs/aee-binding.md`, stack loading and validation, a trace normalizer, candidate JSON Schemas proposed for the v0.2 schema milestone, and an `aocl-trace` CLI. Policy evaluation deliberately stays out of the SDK, matching this spec's layer contract: the tracer records, it never decides.
+
+The SDK repo is private today and **opening at launch**, together with the npm publish. Until then the reference above is a name, not a live link.
+
 ## Related Protocols
 
 AOCL is part of the **Quox protocol family** -- four complementary specs for agentic systems:
