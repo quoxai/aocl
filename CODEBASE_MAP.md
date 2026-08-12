@@ -1,4 +1,4 @@
-<!-- Last verified: 2026-08-11 by /codebase-mirror -->
+<!-- Last verified: 2026-08-12 by /codebase-mirror -->
 
 # AOCL: Codebase Map
 
@@ -132,7 +132,7 @@ Defined in `quoxflow/src/core/envelope.ts` under the `Intents` constant.
 | Schema validity | defer | JSON schemas deferred to v0.2 per ROADMAP |
 | Example stacks present | pass | 2 stack JSONs in examples/stacks/ |
 | Example trace present | pass | 1 NDJSON trace (14 lines) in examples/traces/ |
-| No internal hostnames in examples | pass | Scrubbed in commit a8c5514; re-verified 2026-08-11 (grep clean) |
+| No internal hostnames in examples | pass | Scrubbed in commit a8c5514; re-verified 2026-08-12 (grep clean) |
 
 ## Roadmap Summary
 | Version | Focus |
