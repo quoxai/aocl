@@ -1,4 +1,4 @@
-<!-- Last verified: 2026-08-16 by /codebase-mirror -->
+<!-- Last verified: 2026-08-28 by /codebase-mirror -->
 
 # AOCL: Codebase Map
 
@@ -128,11 +128,11 @@ Defined in `quoxflow/src/core/envelope.ts` under the `Intents` constant.
 | Check | Status | Details |
 |-------|--------|---------|
 | Version present in spec | pass | `0.1` in README table and docs/spec.md H1 |
-| RFC 2119 keywords used | pass | spec.md and stacks.md carry the RFC 2119 boilerplate |
+| RFC 2119 keywords used | pass | spec.md, stacks.md, aee-binding.md and observability.md carry the RFC 2119 boilerplate |
 | Schema validity | defer | JSON schemas deferred to v0.2 per ROADMAP |
 | Example stacks present | pass | 2 stack JSONs in examples/stacks/ |
 | Example trace present | pass | 1 NDJSON trace (14 lines) in examples/traces/ |
-| No internal hostnames in examples | pass | Scrubbed in commit a8c5514; re-verified 2026-08-16 (grep clean) |
+| No internal hostnames in examples | pass | Scrubbed in commit a8c5514; re-verified 2026-08-28 (grep clean) |
 
 ## Roadmap Summary
 | Version | Focus |
