@@ -1,10 +1,17 @@
-# AOCL Protocol -- Agent Orchestration Control Layers
+# AOCL Protocol: Agent Orchestration Control Layers
 
 | | |
 |---|---|
 | **Version** | 0.1 (Experimental) |
-| **Status** | IETF Internet-Draft ([`draft-cowles-aocl-00`](https://datatracker.ietf.org/doc/draft-cowles-aocl/)) |
+| **Status** | IETF Internet-Draft ([`draft-cowles-aocl`](https://datatracker.ietf.org/doc/draft-cowles-aocl/)) |
 | **License** | MIT |
+
+## The short version
+
+- **What:** a standard for the decision pipeline an orchestrator runs every incoming event through, and the audit trail it must leave behind.
+- **Who:** people building or operating agent orchestrators who need to answer "why did the system do that".
+- **Why:** orchestrators make routing, policy, and delegation decisions invisibly; when something goes wrong there is nothing to inspect.
+- **How:** events pass through named layers (route, gate, plan, delegate, verify), and every layer decision is emitted as a traceable AEE event.
 
 AOCL is a control-layer protocol for AI agent orchestration that produces observability as a first-class output.
 
@@ -82,12 +89,12 @@ See: `docs/aee-binding.md`
 
 ## Documentation
 
-- `docs/spec.md` -- Core AOCL concepts and layer contract
-- `docs/aee-binding.md` -- How AOCL uses AEE without changing AEE
-- `docs/stacks.md` -- Default layer taxonomy and stack definition format
-- `docs/observability.md` -- Tracing, logging, and “see layers activate”
-- `docs/examples.md` -- End-to-end trace and stack variant examples
-- `ROADMAP.md` -- Planned extensions and future work
+- `docs/spec.md`: core AOCL concepts and the layer contract
+- `docs/aee-binding.md`: how AOCL uses AEE without changing AEE
+- `docs/stacks.md`: default layer taxonomy and stack definition format
+- `docs/observability.md`: tracing, logging, and watching layers activate
+- `docs/examples.md`: end-to-end trace and stack variant examples
+- `ROADMAP.md`: planned extensions and future work
 
 ---
 
@@ -102,7 +109,7 @@ The SDK repo is private today and **opening at launch**, together with the npm p
 
 ## Related Protocols
 
-AOCL is part of the **Quox protocol family** -- four complementary specs for agentic systems:
+AOCL is part of the **Quox protocol family**, four complementary specs for agentic systems:
 
 | Protocol | Role | Repo |
 |----------|------|------|
@@ -115,7 +122,7 @@ AOCL is part of the **Quox protocol family** -- four complementary specs for age
 - **AEE → AOCL**: AOCL processes incoming AEE envelopes through its layer stack and emits `aocl.*` AEE envelopes for audit.
 - **AOCL → VOLT**: Every AOCL policy decision (`allow`, `deny`, `hitl_required`) becomes a VOLT evidence event with `context.aocl_policy_id` and `context.aocl_decision_id`, creating a tamper-evident record of control decisions.
 - **VOLT proves AOCL**: VOLT's hash-chained event ledger guarantees that approval sequences (e.g., "HITL required → approved → tool executed") haven't been tampered with after the fact.
-- **WARD witnesses AOCL**: WARD produces content-free receipts of AOCL decisions (completions, rejections, bypasses) -- proving decisions happened without storing their content. Signed tips can be published to external sinks for independent verification.
+- **WARD witnesses AOCL**: WARD produces content-free receipts of AOCL decisions (completions, rejections, bypasses), proving decisions happened without storing their content. Signed tips can be published to external sinks for independent verification.
 
 Each protocol is independently useful. Together they provide **observable, controllable, provable, witnessed** agent operations.
 
